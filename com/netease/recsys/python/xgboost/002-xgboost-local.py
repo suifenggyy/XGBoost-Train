@@ -7,13 +7,13 @@ import numpy as np
 
 now = time.time()
 
-dataset = pd.read_csv("train.csv")
+dataset = pd.read_csv("data1/train-part35.csv")
 
-train = dataset.iloc[:, :31].values
+train = dataset.iloc[:, :32].values
 labels = dataset.iloc[:, 32:].values
 
-# tests = pd.read_csv("test.csv")
-# test = tests.iloc[:, :].values
+tests = pd.read_csv("test.csv")
+test = tests.iloc[:, :32].values
 
 
 params={
@@ -31,10 +31,10 @@ params={
 
 plst = list(params.items())
 
-offset = 190000  #
+offset = 3000000  #
 
-num_rounds = 500  # 迭代次数
-# xgtest = xgb.DMatrix(test)
+num_rounds = 100  # 迭代次数
+xgtest = xgb.DMatrix(test)
 
 # 划分训练集与验证集
 xgtrain = xgb.DMatrix(train[:offset,:], label=labels[:offset])
@@ -45,12 +45,12 @@ watchlist = [(xgtrain, 'train'), (xgval, 'val')]
 
 model = xgb.train(plst, xgtrain, num_rounds, watchlist)
 #model.save_model('./model/xgb.model')  # 用于存储训练出的模型
-# preds = model.predict(xgtest,ntree_limit=model.best_iteration)
-#
-# # 将预测结果写入文件，方式有很多，自己顺手能实现即可
-# np.savetxt('submission_xgb_MultiSoftmax.csv', np.c_[range(1,len(test)+1), preds],
-#                  delimiter=',', header='ImageId,Label', comments='', fmt='%d')
-#
-#
-# cost_time = time.time()-now
-# print "end ......", '\n', "cost time:", cost_time, "(s)......"
+preds = model.predict(xgtest)
+
+# 将预测结果写入文件，方式有很多，自己顺手能实现即可
+np.savetxt('submission_xgb_MultiSoftmax.csv', np.c_[range(1,len(test)+1), preds],
+                 delimiter=',', header='ImageId,Label', comments='', fmt='%d')
+
+
+cost_time = time.time()-now
+print "end ......", '\n', "cost time:", cost_time, "(s)......"
