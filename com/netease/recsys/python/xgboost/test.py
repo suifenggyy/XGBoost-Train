@@ -6,10 +6,11 @@ import pylab as pl
 
 now = time.time()
 
-dataset = pd.read_csv("train.csv")
+dataset = pd.read_csv("data090.csv")
 print dataset.head()
 print dataset.describe()
-print dataset['33'].count()
-
-dataset['33'].hist()
+print dataset["clk"].count()
+print dataset.iloc[1:3, 30]
+dataset["clk"].hist()
 pl.show()
+
